@@ -5,6 +5,11 @@ sudo sysctl -w net.ipv4.conf.all.forwarding=1
 
 sudo mkdir -p /etc/trojan-go
 
+wget https://github.com/p4gefau1t/trojan-go/releases/download/v0.10.6/trojan-go-linux-amd64.zip
+unzip trojan-go-linux-amd64.zip
+install trojan-go /usr/bin/
+rm -rf example  geoip.dat  geoip-only-cn-private.dat  geosite.dat trojan-go  trojan-go-linux-amd64.zip
+
 # config file
 cat <<EOF >config.json
 {
