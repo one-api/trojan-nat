@@ -1,17 +1,12 @@
 #!/bin/bash
 
-SERVER=$1
+SERVER=$(cat /etc/trojan-go/config.json | grep remote_addr | awk -F '"' '{print $4}')
 PORT=1080
 
-NO_PROXY_IP=$(dig $SERVER +short)
+NO_PROXY_IP=$(dig $SERVER +short | tail -n1)
 CHAIN_NAME=TROJAN
 
 sysctl -w net.ipv4.conf.all.forwarding=1 
-
-if [ -z "$SERVER" ]; then
-    echo 'server not found in param $1, quiting'
-    exit 1
-fi
 
 if [ -z "$NO_PROXY_IP" ]; then
     echo 'server ip not found, quiting'
@@ -63,3 +58,4 @@ iptables -t mangle -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
 iptables -t mangle -A $CHAIN_NAME -p udp -j TPROXY --on-port $PORT --tproxy-mark 0x01/0x01
 
 iptables -t mangle -A PREROUTING -j $CHAIN_NAME
+
