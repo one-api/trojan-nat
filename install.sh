@@ -20,7 +20,10 @@ cat <<EOF >config.json
     "remote_port": 443,
     "password": [
         "$PASSWORD"
-    ]
+    ],
+    "mux": {
+    	"enabled": false
+    }
 }
 EOF
 sudo mv config.json /etc/trojan-go/config.json
@@ -52,3 +55,6 @@ sudo mv trojan-go.service /etc/systemd/system/
 # etc file
 mkdir -p /etc/trojan-go/
 cp nat.sh /etc/trojan-go/nat.sh
+
+systemctl enable trojan-go
+
