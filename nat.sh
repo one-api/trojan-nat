@@ -14,20 +14,17 @@ if [ -z "$NO_PROXY_IP" ]; then
 fi
 
 # clean first
-iptables -t nat -F $CHAIN_NAME
+iptables -t nat -F $CHAIN_NAME 2>/dev/null
 iptables -t nat -D PREROUTING -j $CHAIN_NAME 2>/dev/null
 iptables -t nat -D OUTPUT -j $CHAIN_NAME 2>/dev/null
-iptables -t nat -X $CHAIN_NAME
+iptables -t nat -X $CHAIN_NAME 2>/dev/null
 
-iptables -t mangle -F $CHAIN_NAME
+iptables -t mangle -F $CHAIN_NAME 2>/dev/null
 iptables -t mangle -D PREROUTING -j $CHAIN_NAME 2>/dev/null
-iptables -t mangle -X $CHAIN_NAME
+iptables -t mangle -X $CHAIN_NAME 2>/dev/null
 
-# Create new chain
+# nat for tcp
 iptables -t nat -N $CHAIN_NAME
-iptables -t mangle -N $CHAIN_NAME
-
-# nat
 iptables -t nat -A $CHAIN_NAME -d $NO_PROXY_IP -j RETURN
 iptables -t nat -A $CHAIN_NAME -d 0.0.0.0/8 -j RETURN
 iptables -t nat -A $CHAIN_NAME -d 10.0.0.0/8 -j RETURN
@@ -46,8 +43,8 @@ iptables -t nat -A OUTPUT -j $CHAIN_NAME
 ip route add local default dev lo table 100
 ip rule add fwmark 1 lookup 100
 
+iptables -t mangle -N $CHAIN_NAME
 iptables -t mangle -A $CHAIN_NAME -d $NO_PROXY_IP -j RETURN
-iptables -t mangle -A $CHAIN_NAME -d 0.0.0.0/8 -j RETURN
 iptables -t mangle -A $CHAIN_NAME -d 10.0.0.0/8 -j RETURN
 iptables -t mangle -A $CHAIN_NAME -d 127.0.0.0/8 -j RETURN
 iptables -t mangle -A $CHAIN_NAME -d 169.254.0.0/16 -j RETURN
