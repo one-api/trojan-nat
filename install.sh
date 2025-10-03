@@ -23,6 +23,9 @@ cat <<EOF >config.json
     ],
     "mux": {
     	"enabled": false
+    },
+    "tcp": {
+        "no_delay": true
     }
 }
 EOF
